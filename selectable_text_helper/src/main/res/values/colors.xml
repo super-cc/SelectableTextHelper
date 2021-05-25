@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="selectable_cursor">#004DDD</color>
+    <color name="selectable_select_text_bg">#59004DDD</color>
+    <color name="selectable_select_pop_bg">#6B6B6E</color>
+
+</resources>
