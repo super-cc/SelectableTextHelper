@@ -11,6 +11,7 @@ import com.cc.selectable_text_helper.java.SelectableTextHelper
 class MainActivity : AppCompatActivity() {
 
     var tvSelect : TextView? = null
+    var tvSelectable : TextView? = null
     val selectableTextHelper = SelectableTextHelper()
     var mTouchX = 0
     var mTouchY = 0
@@ -33,6 +34,23 @@ class MainActivity : AppCompatActivity() {
         })
 
         tvSelect?.setOnClickListener {
+            selectableTextHelper.resetSelectionInfo()
+            selectableTextHelper.hideSelectView()
+        }
+
+
+        tvSelectable = findViewById(R.id.tv_selectable)
+        tvSelectable?.setOnLongClickListener(OnLongClickListener {
+            selectableTextHelper.showSelectView(tvSelectable, mTouchX, mTouchY)
+            true
+        })
+        tvSelectable?.setOnTouchListener(OnTouchListener { arg0, event ->
+            mTouchX = event.x.toInt()
+            mTouchY = event.y.toInt()
+            false
+        })
+
+        tvSelectable?.setOnClickListener {
             selectableTextHelper.resetSelectionInfo()
             selectableTextHelper.hideSelectView()
         }
