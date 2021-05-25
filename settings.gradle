@@ -1,0 +1,3 @@
+include ':selectable_text_utils'
+include ':app'
+rootProject.name = "SelectableTextUtils"
