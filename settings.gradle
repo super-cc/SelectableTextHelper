@@ -1,3 +1,3 @@
 include ':selectable_text_helper'
 include ':app'
-rootProject.name = "SelectableTextUtils"
+rootProject.name = "SelectableTextHelper"

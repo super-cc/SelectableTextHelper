@@ -1,2 +1,2 @@
-# SelectableTextUtils
-文本选择工具类
+# SelectableTextHelper
+文本选择帮助类

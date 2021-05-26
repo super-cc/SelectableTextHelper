@@ -1,4 +1,4 @@
-package com.cc.selectabletextutils
+package com.cc.selectabletexthelper
 
 import org.junit.Test
 

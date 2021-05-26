@@ -1,5 +1,7 @@
 package com.cc.selectable_text_helper.java;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -12,8 +14,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import androidx.annotation.DrawableRes;
+import androidx.cardview.widget.CardView;
 
 import com.cc.selectable_text_helper.R;
 
@@ -30,6 +36,9 @@ public class SelectableTextHelper {
     private Context mContext;
     private TextView mTextView;
 
+    private View mOperateView;
+    private int mArrowRes;
+
     private Spannable mSpannable;
     private final SelectionInfo mSelectionInfo = new SelectionInfo();
     private final static int DEFAULT_SELECTION_LENGTH = 1;
@@ -42,15 +51,18 @@ public class SelectableTextHelper {
     private OperateWindow mOperateWindow;
     private FullScreenWindow mFullScreenWindow;
 
-    private SelectableOnShowListener onShowListener;
     private SelectableOnChangeListener onChangeListener;
 
-    public SelectableTextHelper() {
-
+    public SelectableTextHelper(View operateView, @DrawableRes int arrowRes) {
+        if (operateView == null) {
+            throw new SelectFrameLayoutException("操作框View不可为null");
+        }
+        this.mOperateView = operateView;
+        this.mArrowRes = arrowRes;
     }
 
-    public void setSelectableOnShowListener(SelectableOnShowListener onShowListener) {
-        this.onShowListener = onShowListener;
+    public String getSelectedText() {
+        return mSelectionInfo.mSelectionContent;
     }
 
     public void setSelectableOnChangeListener(SelectableOnChangeListener onChangeListener) {
@@ -68,8 +80,10 @@ public class SelectableTextHelper {
         mTextView = textView;
         mTextView.setText(mTextView.getText(), TextView.BufferType.SPANNABLE);
 
-        mOperateWindow = new OperateWindow(mContext);
-        mFullScreenWindow = new FullScreenWindow(mContext);
+        if (mOperateWindow == null)
+            mOperateWindow = new OperateWindow(mContext);
+        if (mFullScreenWindow == null)
+            mFullScreenWindow = new FullScreenWindow(mContext);
 
         hideSelectView();
         resetSelectionInfo();
@@ -95,7 +109,46 @@ public class SelectableTextHelper {
         mFullScreenWindow.show();
         showCursorHandle(mStartHandle);
         showCursorHandle(mEndHandle);
+        mOperateWindow.firstShowWithTextView();
+    }
+
+    private void showCursorHandle(CursorHandle cursorHandle) {
+        Layout layout = mTextView.getLayout();
+        int offset = cursorHandle.isLeft ? mSelectionInfo.getStart(mTextView)
+                : mSelectionInfo.getEnd(mTextView);
+        cursorHandle.show((int) layout.getPrimaryHorizontal(offset),
+                layout.getLineBottom(layout.getLineForOffset(offset)));
+    }
+
+    public void copyText() {
+        ClipboardManager clip = (ClipboardManager) mContext
+                .getSystemService(Context.CLIPBOARD_SERVICE);
+        clip.setPrimaryClip(ClipData.newPlainText(
+                mSelectionInfo.mSelectionContent,
+                mSelectionInfo.mSelectionContent));
+    }
+
+    public void selectAll() {
+        hideSelectView();
+        selectText(0, mTextView.getText().length());
+        isShow = true;
+        mFullScreenWindow.show();
+        showCursorHandle(mStartHandle);
+        showCursorHandle(mEndHandle);
         mOperateWindow.showWithTextView();
+    }
+
+    public void dismiss() {
+        resetSelectionInfo();
+        hideSelectView();
+    }
+
+    public void resetSelectionInfo() {
+        mSelectionInfo.mSelectionContent = null;
+        if (mSpannable != null && mSpan != null) {
+            mSpannable.removeSpan(mSpan);
+            mSpan = null;
+        }
     }
 
     public void hideSelectView() {
@@ -112,22 +165,6 @@ public class SelectableTextHelper {
         }
         if (mFullScreenWindow != null) {
             mFullScreenWindow.dismiss();
-        }
-    }
-
-    private void showCursorHandle(CursorHandle cursorHandle) {
-        Layout layout = mTextView.getLayout();
-        int offset = cursorHandle.isLeft ? mSelectionInfo.getStart(mTextView)
-                : mSelectionInfo.getEnd(mTextView);
-        cursorHandle.show((int) layout.getPrimaryHorizontal(offset),
-                layout.getLineBottom(layout.getLineForOffset(offset)));
-    }
-
-    public void resetSelectionInfo() {
-        mSelectionInfo.mSelectionContent = null;
-        if (mSpannable != null && mSpan != null) {
-            mSpannable.removeSpan(mSpan);
-            mSpan = null;
         }
     }
 
@@ -359,7 +396,8 @@ public class SelectableTextHelper {
         private PopupWindow mWindow;
 
         private View contentView;
-        private View ivArrow;
+        private CardView cvRoot;
+        private ImageView ivArrow;
 
         public OperateWindow(final Context context) {
             screenWidth = TextLayoutUtils.getScreenWidth(mContext);
@@ -375,8 +413,16 @@ public class SelectableTextHelper {
                     ViewGroup.LayoutParams.WRAP_CONTENT, false);
             mWindow.setClippingEnabled(false);
 
+            cvRoot = contentView.findViewById(R.id.cv_root);
+            cvRoot.addView(mOperateView);
 
             ivArrow = contentView.findViewById(R.id.iv_arrow);
+            if (mArrowRes > 0) {
+                ivArrow.setVisibility(View.VISIBLE);
+                ivArrow.setImageResource(mArrowRes);
+            } else {
+                ivArrow.setVisibility(View.GONE);
+            }
         }
 
         private int getWindowWidth() {
@@ -399,6 +445,17 @@ public class SelectableTextHelper {
                 removeX = mTextView.getWidth() - start;
             }
             return removeX / 2;
+        }
+
+        public void firstShowWithTextView() {
+            showWithTextView();
+            mTextView.post(new Runnable() {
+                @Override
+                public void run() {
+                    dismiss();
+                    showWithTextView();
+                }
+            });
         }
 
         public void showWithTextView() {
@@ -515,6 +572,5 @@ public class SelectableTextHelper {
             mFullScreenWindow.dismiss();
         }
     }
-
 
 }
