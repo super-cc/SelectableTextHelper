@@ -190,7 +190,7 @@ public class SelectableTextHelper {
             }
 
             mSelectionInfo.mSelectionContent = mSpannable.subSequence(
-                    mSelectionInfo.getStart(mTextView), mSelectionInfo.getEnd(mTextView)).toString();
+                    mSelectionInfo.getStart(mSpannable), mSelectionInfo.getEnd(mSpannable)).toString();
 
             // 调用系统方法设置选中文本的状态
             mSpannable.setSpan(mSpan, mSelectionInfo.getStart(mTextView), mSelectionInfo.getEnd(mTextView), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
