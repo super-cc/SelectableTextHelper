@@ -1,6 +1,5 @@
-package com.cc.selectable_text_helper.java;
+package love.isuper.selectabletexthelper.java;
 
-import android.text.Spannable;
 import android.widget.TextView;
 
 public class SelectionInfo {

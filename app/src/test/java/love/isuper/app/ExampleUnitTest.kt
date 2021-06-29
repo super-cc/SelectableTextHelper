@@ -1,4 +1,4 @@
-package com.cc.selectable_text_helper
+package love.isuper.app
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.cc.selectable_text_helper.java;
+package love.isuper.selectabletexthelper.java;
 
 /**
  * Created by guoshichao on 2021/3/9

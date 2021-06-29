@@ -1,4 +1,4 @@
-package com.cc.selectable_text_helper.java;
+package love.isuper.selectabletexthelper.java;
 
 import android.content.Context;
 import android.graphics.Rect;

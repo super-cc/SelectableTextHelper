@@ -1,4 +1,4 @@
-package com.cc.selectabletexthelper
+package love.isuper.app
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,8 @@ import android.view.View.OnLongClickListener
 import android.view.View.OnTouchListener
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.cc.selectable_text_helper.java.SelectableTextHelper
+import com.isuper.app.R
+import love.isuper.selectabletexthelper.java.SelectableTextHelper
 
 class MainActivity : AppCompatActivity() {
 

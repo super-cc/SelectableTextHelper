@@ -1,4 +1,4 @@
-package com.cc.selectable_text_helper.java;
+package love.isuper.selectabletexthelper.java;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -21,7 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.cardview.widget.CardView;
 
-import com.cc.selectable_text_helper.R;
+import com.isuper.selectable_text_helper.R;
 
 /**
  * Created by guoshichao on 2021/3/17
